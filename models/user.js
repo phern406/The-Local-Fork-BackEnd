@@ -1,4 +1,4 @@
-// firstname, lastname, email, username, password, city, tagline, role (admin or not)
+// import { Schema, model } from 'mongoose';
 var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
@@ -43,3 +43,5 @@ var userSchema = new mongoose.Schema({
 var User = mongoose.model('user', userSchema);
 
 module.exports = User
+
+// export default User
