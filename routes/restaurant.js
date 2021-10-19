@@ -6,7 +6,6 @@ var Restaurant = require('../models/restaurant');
 
 router.get('/:resources', function(req, res, next) {
     let restName = req.params.resources
-    console.log(restName)
     Restaurant.findOne({
             name: restName
     }) 
@@ -18,5 +17,28 @@ router.get('/:resources', function(req, res, next) {
         })
     })
 });
+
+router.post('/addRes', function(req, res, next) {
+    try {
+        let newRes = new Restaurant({
+            name: req.body.name,
+            location: req.body.location,
+            hours: req.body.hours,
+            availability: req.body.availability,
+            rating: req.body.rating,
+            menu: req.body.menu,
+            deleted: req.body.deleted
+        });
+        let result = newRes.save();
+        console.log(result);
+        //res.status(200).send("User successfully created");
+    } catch (err) {
+        //if this stops working, res.json is the culprit!
+        res.json({
+            message: "Restaurant not added",
+            status: 404
+        })
+    }
+})
 
 module.exports = router;
