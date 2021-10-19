@@ -4,8 +4,19 @@ var Restaurant = require('../models/restaurant');
 
 
 
-router.get('/res1', async(req, res, next) => {
-    console.log("are you working?")
+router.get('/:resources', function(req, res, next) {
+    let restName = req.params.resources
+    console.log(restName)
+    Restaurant.findOne({
+            name: restName
+    }) 
+    .then(restaurant => {
+        res.json({
+            status: 200,
+            message: "Success",
+            data: restaurant
+        })
+    })
 });
 
 module.exports = router;
