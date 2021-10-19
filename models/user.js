@@ -1,4 +1,4 @@
-// firstname, lastname, email, username, password, city, tagline, role (admin or not)
+// import { Schema, model } from 'mongoose';
 var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
@@ -13,7 +13,8 @@ var userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        //lowercase: true
     },
     username: {
         type: String,
@@ -22,7 +23,8 @@ var userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minlength: 6
     },
     city: {
         type: String,
@@ -43,3 +45,5 @@ var userSchema = new mongoose.Schema({
 var User = mongoose.model('user', userSchema);
 
 module.exports = User
+
+// export default User

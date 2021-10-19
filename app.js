@@ -7,6 +7,7 @@ mongoose.Promise = global.Promise;
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var restaurantRouter = require('./routes/restaurant');
 
 //APP IS RUNNING AT PORT 5000
 var app = express();
@@ -20,7 +21,13 @@ mongoose.connect(connectionString, {
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error"));
 db.once("open", function() {
-    console.log("Database connection");
+    console.log("Database connected");
+});
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
 });
 
 app.use(logger('dev'));
@@ -31,5 +38,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
+app.use('/restaurant', restaurantRouter);
 
 module.exports = app;

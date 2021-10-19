@@ -1,7 +1,12 @@
 // location, hours, availability, rating, menu (breakfast/lunch/dinner)
 var mongoose = require('mongoose');
 
-var userSchema = new mongoose.Schema({
+var restaurantSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
     location: {
         type: String,
         required: true
@@ -21,9 +26,13 @@ var userSchema = new mongoose.Schema({
     menu: {
         type: String,
         required: true
+    },
+    deleted: {
+        type: Boolean,
+        default: false
     }
 });
 
-var Restaurant = mongoose.model('restaurant', userSchema);
+var Restaurant = mongoose.model('restaurant', restaurantSchema);
 
 module.exports = Restaurant
