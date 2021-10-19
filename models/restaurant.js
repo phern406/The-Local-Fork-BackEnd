@@ -24,7 +24,7 @@ var restaurantSchema = new mongoose.Schema({
         required: true
     },
     menu: {
-        type: String,
+        type: [String],
         required: true
     },
     deleted: {
