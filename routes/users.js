@@ -27,6 +27,7 @@ router.post('/signup', async(req, res, next) => {
             username: req.body.username,
             password: passwordService.hashPassword(req.body.password),
             tagline: req.body.tagline
+            
         });
         let result = await newUser.save();
         console.log(result);

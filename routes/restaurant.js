@@ -18,7 +18,7 @@ router.get('/:resources', function(req, res, next) {
     })
 });
 
-router.post('/addRes', function(req, res, next) {
+router.post('/addRes', async(req, res, next) => {
     try {
         let newRes = new Restaurant({
             name: req.body.name,
@@ -29,9 +29,9 @@ router.post('/addRes', function(req, res, next) {
             menu: req.body.menu,
             deleted: req.body.deleted
         });
-        let result = newRes.save();
+        let result = await newRes.save();
         console.log(result);
-        //res.status(200).send("User successfully created");
+        res.status(200).send("User successfully created");
     } catch (err) {
         //if this stops working, res.json is the culprit!
         res.json({
