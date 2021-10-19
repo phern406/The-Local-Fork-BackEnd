@@ -49,6 +49,8 @@ router.get('/login', function(req, res, next) {
 
 // login ----> /login THIS IS THE ONE THAT WORKS
 router.post('/login', async(req, res, next) => {
+    //res.header("Access-Control-Allow-Origin", "*");
+    console.log(req.body)
     User.findOne({ username: req.body.username }, function(err, user) {
         if (err) {
             console.log(err)
