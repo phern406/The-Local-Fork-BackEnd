@@ -23,6 +23,7 @@ router.post('/signup', async(req, res, next) => {
             tagline: req.body.tagline,
             delete: req.body.delete,
             admin: req.body.admin
+
         });
         let result = await newUser.save();
         console.log(result);
