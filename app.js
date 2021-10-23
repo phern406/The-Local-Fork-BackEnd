@@ -8,6 +8,7 @@ mongoose.Promise = global.Promise;
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var restaurantRouter = require('./routes/restaurant');
+var reviewRouter = require('./routes/reviews')
 
 //APP IS RUNNING AT PORT 5000
 var app = express();
@@ -39,5 +40,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/restaurant', restaurantRouter);
+app.use('/review', reviewRouter);
 
 module.exports = app;

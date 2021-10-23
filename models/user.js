@@ -24,7 +24,7 @@ var userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 6
+        minlength: [6, 'Minimum password length is 6 characters']
     },
     city: {
         type: String,
@@ -41,6 +41,14 @@ var userSchema = new mongoose.Schema({
         default: false
     }
 });
+
+//fire a function after doc saved to db
+// userSchema.post('save', function (doc, next) {
+
+
+//     //next();
+// });
+
 
 var User = mongoose.model('user', userSchema);
 
