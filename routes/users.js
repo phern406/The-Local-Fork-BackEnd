@@ -9,12 +9,6 @@ var passwordService = require('../services/password');
 
 //ROUTES NEEDED: 
 
-//sign up view... is this needed if we are not using handlebars or will React take care of this?
-//render the sign up page
-router.get('/signup', function(req, res, next) {
-    res.send('sign up page');
-});
-
 
 //registration/sign up ----> /signup   THIS SEEMS TO BE WORKING FINE!
 router.post('/signup', async(req, res, next) => {
@@ -26,8 +20,10 @@ router.post('/signup', async(req, res, next) => {
             city: req.body.city,
             username: req.body.username,
             password: passwordService.hashPassword(req.body.password),
-            tagline: req.body.tagline
-            
+            tagline: req.body.tagline,
+            delete: req.body.delete,
+            admin: req.body.admin
+
         });
         let result = await newUser.save();
         console.log(result);
@@ -43,14 +39,8 @@ router.post('/signup', async(req, res, next) => {
 
 
 
-//login view... is this needed if we are not using handlebars or will React take care of this?
-router.get('/login', function(req, res, next) {
-    res.send('login page');
-});
-
 // login ----> /login THIS IS THE ONE THAT WORKS
 router.post('/login', async(req, res, next) => {
-    //res.header("Access-Control-Allow-Origin", "*");
     console.log(req.body)
     User.findOne({ username: req.body.username }, function(err, user) {
         if (err) {
@@ -90,7 +80,7 @@ router.post('/login', async(req, res, next) => {
 router.get('/profile', async(req, res, next) => {
     //console.log(req.headers);
     let myToken = req.headers.authorization;
-    console.log(myToken);
+    //console.log(myToken);
 
     if (myToken) {
         let currentUser = await tokenService.verifyToken(myToken);
@@ -124,19 +114,53 @@ router.get('/profile', async(req, res, next) => {
 })
 
 
+//LOGOUT... NOT YET TESTED
+router.get('/logout', async(req, res, next) => {
+    res.cookie('jwt', '');
+    res.redirect('/login');
+})
 
 
-//restaurant page plan on 3? too much?? ----> /*name of restaurant */ 
-//home page - just render home page ----> /home
-//favourtie page ----> 
-//map ---->
+//allow authentication to visit other pages on the site. not sure how to test this!
+router.get('*', async(req, res, next) => {
+    let myToken = req.headers.authorization;
 
-//add review ---->
-//logout ---->
+    if (myToken) {
+        let checkUser = await tokenService.verifyToken(myToken);
+
+        if (checkUser) {
+            //route logic goes here
+            res.locals.user = checkUser;
+            next();
+        } else {
+            res.locals.user = null;
+            res.json({
+                message: "Invalid or expired token",
+                status: 403,
+            })
+        }
+    } else {
+        res.locals.user = null;
+        next();
+        res.json({
+            message: "No token received",
+            status: 403,
+        })
+    }
+})
+
+
+//favourtie page ----> I think this will pull info from the database if "liked" or not. so a route is needed for this
+
+//map ----> 
+
+
+//STRETCH GOALS 
 //admin ---->
+// admin user should be able to view all users and restaurants; and delete reviews.
+
 //delete review ---->
-//delete user ---->
-//edit review ---->
+
 
 
 module.exports = router;
