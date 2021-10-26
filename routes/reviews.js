@@ -10,20 +10,18 @@ const { json, response } = require('express');
 
 
 
-//route to ADD a review --> this allows users add a review to a restaurant
+//route to ADD a review --> this allows a logged in user add a review to a restaurant
 router.post('/addReview', async(req, res, next) => {
 
     let myToken = req.headers.authorization;
-    //console.log(myToken);
     let currentUser = await tokenService.verifyToken(myToken);
-    //console.log(currentUser);
 
     if (currentUser) {
-        console.log(req.body);
+        // console.log(req.body);
 
         let ret = await Restaurant.updateOne({
-            _id: req.body._id,
-            //name: 'Res7'
+            //_id: req.body._id,
+            name: req.body.name
         }, {
             $push: {
                 reviews: {
@@ -34,8 +32,8 @@ router.post('/addReview', async(req, res, next) => {
         }, );
     }
 
-    console.log(ret.n);
-    console.log(ret.nModified);
+    // console.log(ret.n);
+    // console.log(ret.nModified);
 
     res.status(200).send("Review successfully created");
 
@@ -43,27 +41,31 @@ router.post('/addReview', async(req, res, next) => {
 
 
 
-//updating a review
+//updating/edit a review
 router.put('/editReview', async(req, res, next) => {
-    Restaurant.findOneAndUpdate({ 'reviews._id': '6171210d06c7c548608f45b2' }, {
+    Restaurant.findOneAndUpdate({ 'reviews._id': '61711d5bc485285aa9455e91' }, {
         '$set': {
-            'reviews.$.review': 'updated again'
+            'reviews.$.review': 'this is a typed in review on vsc'
         }
     }, function(err) { err })
     res.status(200).send("Review successfully updated");
 })
 
 
-// deleting a review
-router.delete('/:id', function(req, res) {
-    let deleteUser = req.params.id
-    Restaurant.findOne({
-            _id: deleteUser
-        })
-        .then(Restaurant.review, {
-            delete: true
-        });
-});
+
+//deleting a review ---- LOOKS LIKE THIS IS WORKING!!
+//this route needs to be authenticated to allow a user delete their own review
+router.delete('/delete', function(req, res) {
+    Restaurant.updateOne({
+            // this first id is the id for the restaurant 
+            _id: req.body.id //'6176f81cb156ca1dceec104d'
+                // this second id is the id for the review to be deleted
+        }, { $pull: { 'reviews': { _id: '61771db38a5b327de37db93b' } } },
+
+        function(err) { err }
+    )
+    res.status(200).send('Review deleted')
+})
 
 
 
@@ -94,23 +96,16 @@ router.delete('/:id', function(req, res) {
 // })
 
 
-
-// //route to DELETE a review --> this should allow a user delete their own review
-// router.delete('/:id', async(req, res, next) => {
-//     const id = req.body.id;
-
-//     Restaurant.findByIdAndDelete(id)
-//         .then(data => {
-//             if (!data) {
-//                 res.status(404).send({ message: `Cannot delete with ${id}` })
-//             } else {
-//                 res.send({ message: 'User deleted successfully' })
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).send({ message: 'Could not delete user with id ' + id })
-//         })
+// deleting a review... OK SO THIS DELETED THE ENTIRE RESTAURANT!
+// router.delete('/deletereview', async(req, res, next) => {
+//     Restaurant.findOneAndRemove({ 'reviews._id': '6171210d06c7c548608f45b2' }, {
+//         '$pull': {
+//             'reviews.$.review': req.body.review
+//         }
+//     }, function(err) { err })
+//     res.status(200).send("Review successfully deleted");
 // })
+
 
 
 module.exports = router;
