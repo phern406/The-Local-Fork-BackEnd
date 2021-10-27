@@ -57,7 +57,8 @@ router.post('/login', async(req, res, next) => {
                 res.json({
                     message: "Login was successful",
                     status: 200,
-                    token
+                    token,
+                    user
                 })
             } else {
                 console.log("Wrong password");
@@ -113,10 +114,10 @@ router.get('/profile', async(req, res, next) => {
     }
 })
 
-
-//LOGOUT... NOT YET TESTED
+//logout
 router.get('/logout', async(req, res, next) => {
     res.cookie('jwt', '');
+    res.json({ status: "logged out"});
     res.redirect('/login');
 })
 
