@@ -57,7 +57,8 @@ router.post('/login', async(req, res, next) => {
                 res.json({
                     message: "Login was successful",
                     status: 200,
-                    token
+                    token,
+                    user
                 })
             } else {
                 console.log("Wrong password");
@@ -159,7 +160,6 @@ router.get('*', async(req, res, next) => {
 //admin ---->
 // admin user should be able to view all users and restaurants; and delete reviews.
 
-//delete review ---->
 
 
 

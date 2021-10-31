@@ -26,7 +26,8 @@ router.post('/addReview', async(req, res, next) => {
             $push: {
                 reviews: {
                     username: currentUser.username,
-                    review: req.body.review
+                    review: req.body.review,
+                    date
                 }
             }
         }, );
@@ -42,10 +43,10 @@ router.post('/addReview', async(req, res, next) => {
 
 
 //updating/edit a review
-router.put('/editReview', async(req, res, next) => {
-    Restaurant.findOneAndUpdate({ 'reviews._id': '61711d5bc485285aa9455e91' }, {
+router.put('/editReview/:resId', async(req, res, next) => {
+    Restaurant.findOneAndUpdate({ 'reviews._id': req.params.resId }, {
         '$set': {
-            'reviews.$.review': 'this is a typed in review on vsc'
+            'reviews.$.review': req.body.review
         }
     }, function(err) { err })
     res.status(200).send("Review successfully updated");
@@ -55,12 +56,11 @@ router.put('/editReview', async(req, res, next) => {
 
 //deleting a review ---- LOOKS LIKE THIS IS WORKING!!
 //this route needs to be authenticated to allow a user delete their own review
-router.delete('/delete', function(req, res) {
+router.delete('/delete/:resId/:revId', function(req, res) {
     Restaurant.updateOne({
             // this first id is the id for the restaurant 
-            _id: req.body.id //'6176f81cb156ca1dceec104d'
-                // this second id is the id for the review to be deleted
-        }, { $pull: { 'reviews': { _id: '61771db38a5b327de37db93b' } } },
+            _id: req.params.resId //'6176f81cb156ca1dceec104d'
+        }, { $pull: { 'reviews': { _id: req.params.revId } } },
 
         function(err) { err }
     )
