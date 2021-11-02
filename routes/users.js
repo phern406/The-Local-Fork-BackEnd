@@ -160,7 +160,6 @@ router.get('*', async(req, res, next) => {
 //admin ---->
 // admin user should be able to view all users and restaurants; and delete reviews.
 
-//delete review ---->
 
 
 
