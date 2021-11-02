@@ -114,10 +114,10 @@ router.get('/profile', async(req, res, next) => {
     }
 })
 
-
-//LOGOUT... NOT YET TESTED
+//logout
 router.get('/logout', async(req, res, next) => {
     res.cookie('jwt', '');
+    res.json({ status: "logged out"});
     res.redirect('/login');
 })
 

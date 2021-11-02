@@ -26,7 +26,8 @@ router.post('/addReview', async(req, res, next) => {
             $push: {
                 reviews: {
                     username: currentUser.username,
-                    review: req.body.review
+                    review: req.body.review,
+                    date
                 }
             }
         }, );

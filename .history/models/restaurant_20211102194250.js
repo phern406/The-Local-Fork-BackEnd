@@ -41,6 +41,7 @@ var restaurantSchema = new mongoose.Schema({
     reviews: [{
         username: String,
         review: String,
+        created_at: Timestamp,
         required: false
     }]
 });

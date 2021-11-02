@@ -4,36 +4,26 @@ var router = express.Router();
 var Restaurant = require("../models/restaurant");
 
 //find all restaurants
-router.get("/", function (req, res, next) {
-  let restName = req.params.resources;
-  Restaurant.find({}).then((restaurant) => {
-    res.json({
-      status: 200,
-      message: "Success",
-      restaurants: restaurant,
-    });
-  });
+router.get("/", function (req, res) {
+  Restaurant.find(
+    {},
+    {
+      _id: 0,
+      name: 1,
+      location: 1,
+      hours: 1,
+      rating: 1,
+      reviews: 10,
+    },
+    function (err, result) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(result), console.log(result);
+      }
+    }
+  );
 });
-// router.get("/", function (req, res) {
-//   Restaurant.find(
-//     {},
-//     {
-//       _id: 0,
-//       name: 1,
-//       location: 1,
-//       hours: 1,
-//       rating: 1,
-//       reviews: 10,
-//     },
-//     function (err, result) {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         res.json(result), console.log(result);
-//       }
-//     }
-//   );
-// });
 
 //to add a restaurant
 router.post("/addRes", async (req, res, next) => {
@@ -93,6 +83,7 @@ router.get("/search", function (req, res) {
     }
   );
 });
+ 
 
 // function escapeRegex(text) {
 //   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
