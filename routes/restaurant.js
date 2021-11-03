@@ -72,22 +72,27 @@ router.put("/updateRes", function (req, res) {
 });
 
 //route for SEARCH ===> THIS WORKS
-router.get("/search", function (req, res) {
+router.post("/search", function (req, res) {
+  console.log(req.body.query)
   Restaurant.find(
     {
       $or: [
         {
-          name: { $regex: req.query.search, $options: "i" },
+          // name: req.body.query,
+          name: { $regex: req.body.query, $options: "i" },
         },
         {
-          location: { $regex: req.query.search, $options: "i" },
+          // location: req.body.query
+          location: { $regex: req.body.query, $options: "i" },
         },
       ],
     },
     function (err, result) {
       if (err) {
+        console.log("error")
         res.send(err);
       } else {
+        console.log("Success")
         console.log(result), res.json(result);
       }
     }
