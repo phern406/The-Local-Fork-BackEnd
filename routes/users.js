@@ -1,13 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
+const Restaurant = require('../models/restaurant');
+const Review = require('../models/review');
 
 var tokenService = require('../services/auth');
 var passwordService = require('../services/password');
 
-/* GET users listing. */
-
-//ROUTES NEEDED: 
 
 
 //registration/sign up ----> /signup   THIS SEEMS TO BE WORKING FINE!
@@ -153,7 +152,6 @@ router.get('*', async(req, res, next) => {
 
 //favourtie page ----> I think this will pull info from the database if "liked" or not. so a route is needed for this
 
-//map ----> 
 
 
 //STRETCH GOALS 

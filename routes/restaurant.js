@@ -2,6 +2,7 @@ const { query } = require("express");
 var express = require("express");
 var router = express.Router();
 var Restaurant = require("../models/restaurant");
+const Review = require('../models/review');
 
 //find all restaurants
 router.get("/", function (req, res, next) {
@@ -14,26 +15,7 @@ router.get("/", function (req, res, next) {
     });
   });
 });
-// router.get("/", function (req, res) {
-//   Restaurant.find(
-//     {},
-//     {
-//       _id: 0,
-//       name: 1,
-//       location: 1,
-//       hours: 1,
-//       rating: 1,
-//       reviews: 10,
-//     },
-//     function (err, result) {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         res.json(result), console.log(result);
-//       }
-//     }
-//   );
-// });
+
 
 //to add a restaurant
 router.post("/addRes", async (req, res, next) => {
@@ -68,11 +50,11 @@ router.put("/updateRes", function (req, res) {
     }
   );
 
-  res.status(200).send("User successfully created");
+  res.status(200).send("Restaurant successfully updated");
 });
 
 //route for SEARCH ===> THIS WORKS
-router.get("/search", function (req, res) {
+router.post("/search", function (req, res) {
   Restaurant.find(
     {
       $or: [
