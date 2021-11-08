@@ -2,7 +2,7 @@ const { query } = require("express");
 var express = require("express");
 var router = express.Router();
 var Restaurant = require("../models/restaurant");
-const Review = require('../models/review');
+const Review = require("../models/review");
 
 //find all restaurants
 router.get("/", function (req, res, next) {
@@ -15,7 +15,6 @@ router.get("/", function (req, res, next) {
     });
   });
 });
-
 
 //to add a restaurant
 router.post("/addRes", async (req, res, next) => {
@@ -59,10 +58,12 @@ router.post("/search", function (req, res) {
     {
       $or: [
         {
-          name: { $regex: req.query.search, $options: "i" },
+          // name: req.body.query,
+          name: { $regex: req.body.query, $options: "i" },
         },
         {
-          location: { $regex: req.query.search, $options: "i" },
+          // location: req.body.query
+          location: { $regex: req.body.query, $options: "i" },
         },
       ],
     },
