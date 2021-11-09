@@ -28,9 +28,11 @@ var userSchema = new mongoose.Schema({
     },
     city: {
         type: String,
+        required: false
     },
     tagline: {
         type: String,
+        required: false
     },
     deleted: {
         type: Boolean,

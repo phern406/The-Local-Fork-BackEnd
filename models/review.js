@@ -17,6 +17,10 @@ var reviewSchema = new mongoose.Schema({
     type: Object,
     required: false
   },
+  deleted: {
+    boolean: false,
+    required: false
+  },
 });
 
 var Review = mongoose.model("review", reviewSchema);
