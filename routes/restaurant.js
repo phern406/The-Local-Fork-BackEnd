@@ -77,13 +77,8 @@ router.post("/search", function (req, res) {
   );
 });
 
-// function escapeRegex(text) {
-//   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-// }
-
-//to find a restaurant by name
+//to find a restaurant by ID
 router.get("/:resources", function (req, res, next) {
-  console.log("test");
   let restId = req.params.resources;
   Restaurant.findOne({
     _id: restId,
