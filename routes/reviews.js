@@ -12,11 +12,13 @@ const { Mongoose } = require("mongoose");
 
 //BRAND NEW ROUTES - OLDER ONES NOT REACT FRIENDLY
 // FIND ALL REVIEWS WHERE USER ID IS CURRENT USERID
-router.get("/:id", async (req, res, next) => {
-  let currentUserId = req.params.id;
-  const userObjId = ObjectId(currentUserId);
+router.get("/review-by-restaurant-curr-user/:restaurantId", async (req, res, next) => {
+  // let currentUserId = req.params.id; // todo: load user from token
+  let restaurantId = req.params.restaurantId;
+  //const userObjId = ObjectId(currentUserId);
   Review.find({
-    userId: userObjId,
+    // userId: userObjId,
+    restaurantId: restaurantId,
   }).then((reviewData) => {
     res.json({ message: "all ok", reviewData: reviewData });
   });
@@ -42,6 +44,10 @@ router.post("/addNewReview", async (req, res, next) => {
     let newReview = new Review({
       title: req.body.title,
       review: req.body.review,
+      rating: req.body.rating,
+      restaurantId: req.body.restaurantId,
+      // userId:
+      restaurant
     });
     let result = await newReview.save();
     console.log(result);
@@ -58,9 +64,18 @@ router.post("/addNewReview", async (req, res, next) => {
 //UPDATE/EDIT a review
 router.put("/updateReview/:id", function (req, res) {
   let currentUserId = req.params.id;
+
+  // before editing review, check owner of the review and compare with current user
+  
+
   Review.findByIdAndUpdate(
     currentUserId,
-    { review: req.body.review },
+    { 
+      review: req.body.review,
+      title: req.body.title,
+      rating: req.body.rating,
+     },
+    
     function (err, result) {
       console.log(err, result);
     }
@@ -102,12 +117,13 @@ router.post("/addReview", async (req, res, next) => {
 });
 
 //updating/edit a review
-router.put("/editReview/:resId", async (req, res, next) => {
+router.put("/editReview/:revId/:userId", async (req, res, next) => {
   Restaurant.findOneAndUpdate(
-    { "reviews._id": req.params.resId },
+    { "reviews._id": req.params.revId },
+    { "userId": req.params.userId },
     {
       $set: {
-        "reviews.$.review": req.body.review,
+        "reviews.$.review": req.body.review,  //If statment if its true then good else error
       },
     },
     function (err) {
@@ -119,12 +135,14 @@ router.put("/editReview/:resId", async (req, res, next) => {
 
 //deleting a review ---- LOOKS LIKE THIS IS WORKING!!
 //this route needs to be authenticated to allow a user delete their own review
-router.delete("/delete/:resId/:revId", function (req, res) {
+router.delete("/delete/:resId/:revId/:userId", function (req, res) {
   Restaurant.updateOne(
+    { "userId": req.params.userId },
     {
       // this first id is the id for the restaurant
       _id: req.params.resId, //'6176f81cb156ca1dceec104d'
     },
+    // { $pull: { reviews: { _id: req.params.revId } } },
     { $pull: { reviews: { _id: req.params.revId } } },
 
     function (err) {

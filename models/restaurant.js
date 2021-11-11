@@ -36,6 +36,7 @@ var restaurantSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    
     //does the review need to be in a separate model of its own?
     //how do i connect the review given by a user to the user's id under models.user?
     // reviews: [{

@@ -25,7 +25,7 @@ router.post("/addRes", async (req, res, next) => {
       location: req.body.location,
       hours: req.body.hours,
       availability: req.body.availability,
-      rating: req.body.rating,
+      rating: req.body.rating, //Average Rating from all reviews. 
       menu: req.body.menu,
       deleted: req.body.deleted,
     });
@@ -55,21 +55,27 @@ router.put("/updateRes", function (req, res) {
 
 //route for SEARCH ===> THIS WORKS
 router.post("/search", function (req, res) {
-  Restaurant.find(
+
+
+Restaurant.find(
     {
       $or: [
         {
-          name: { $regex: req.query.search, $options: "i" },
+          // name: req.body.query,
+          name: { $regex: req.body.query, $options: "i" },
         },
         {
-          location: { $regex: req.query.search, $options: "i" },
+          // location: req.body.query
+          location: { $regex: req.body.query, $options: "i" },
         },
       ],
     },
     function (err, result) {
       if (err) {
+        console.log("error")
         res.send(err);
       } else {
+        console.log("Success")
         console.log(result), res.json(result);
       }
     }
