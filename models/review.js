@@ -21,6 +21,8 @@ var reviewSchema = new mongoose.Schema({
     boolean: false,
     required: false
   },
+  // createdAt: { type: timestamp}
+  
 });
 
 var Review = mongoose.model("review", reviewSchema);

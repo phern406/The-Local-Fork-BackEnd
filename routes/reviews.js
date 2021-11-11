@@ -35,6 +35,17 @@ router.get("/review/:resid", async (req, res, next) => {
   });
 });
 
+//Find review by reviewId
+router.get('/singlereview/:revId', async (req, res, next)=>{
+  let revId = req.params.revId;
+  Review.findById({
+    _id: revId
+  }).then((data)=>{
+    res.json({ message: "Review found", reviewData: data });
+    console.log(data)
+  })
+});
+
 //ADD review to the review database --> working
 router.post("/addNewReview", async (req, res, next) => {
   try {

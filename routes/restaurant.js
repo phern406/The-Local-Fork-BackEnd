@@ -79,9 +79,9 @@ router.post("/search", function (req, res) {
 
 //to find a restaurant by ID
 router.get("/:resources", function (req, res, next) {
-  let restId = req.params.resources;
+  let resName = req.params.resources;
   Restaurant.findOne({
-    _id: restId,
+    name: resName,
   }).then((restaurant) => {
     console.log(restaurant);
     res.json({
