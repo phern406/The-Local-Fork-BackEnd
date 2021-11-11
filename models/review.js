@@ -15,14 +15,18 @@ var reviewSchema = new mongoose.Schema({
   },
   restaurantId: {
     type: Object,
-    required: false
+    required: false 
   },
-  deleted: {
-    boolean: false,
-    required: false
+  rating: {
+    type: Number,
+    required: true
   },
   // createdAt: { type: timestamp}
   
+  deleted: {
+    type: Boolean,
+    default: false
+  }
 });
 
 var Review = mongoose.model("review", reviewSchema);
