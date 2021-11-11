@@ -26,17 +26,16 @@ router.get("/review-by-restaurant-curr-user/:restaurantId", async (req, res, nex
 
 //FIND ALL REVIEWS FOR A PARTICULAR RESTAURANT
 router.get("/review/:resid", async (req, res, next) => {
-    let currentResId = req.params.resid;
-    console.log(currentResId)
-    //let currentUserId = req.params.id;
-    const userObjId = ObjectId(currentResId);
-    Review.find({
-        restaurantId: userObjId,
-    }).then((reviewData) => {
-      res.json({ message: "all ok", reviewData: reviewData });
-    });
+  let currentResId = req.params.resid;
+  console.log(currentResId);
+  //let currentUserId = req.params.id;
+  const userObjId = ObjectId(currentResId);
+  Review.find({
+    restaurantId: userObjId,
+  }).then((reviewData) => {
+    res.json({ message: "all ok", reviewData: reviewData });
   });
-
+});
 
 //ADD review to the review database --> working
 router.post("/addNewReview", async (req, res, next) => {
@@ -60,7 +59,6 @@ router.post("/addNewReview", async (req, res, next) => {
   }
 });
 
-
 //UPDATE/EDIT a review
 router.put("/updateReview/:id", function (req, res) {
   let currentUserId = req.params.id;
@@ -82,6 +80,21 @@ router.put("/updateReview/:id", function (req, res) {
   );
   res.status(200).send("Review successfully updated");
 });
+
+//DELETE a review --> THIS IS WORKING
+router.delete("/delete/:revId", function (req, res){
+  let revId = req.params.revId
+  Review.findByIdAndDelete(
+    revId 
+  ).then((review)=>{
+    res.json({
+      status: 200,
+      message: "Deleted review",
+      data: review,
+    });
+  })
+});
+
 
 
 

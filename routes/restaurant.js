@@ -2,7 +2,7 @@ const { query } = require("express");
 var express = require("express");
 var router = express.Router();
 var Restaurant = require("../models/restaurant");
-const Review = require('../models/review');
+const Review = require("../models/review");
 
 //find all restaurants
 router.get("/", function (req, res, next) {
@@ -15,7 +15,6 @@ router.get("/", function (req, res, next) {
     });
   });
 });
-
 
 //to add a restaurant
 router.post("/addRes", async (req, res, next) => {
@@ -82,16 +81,11 @@ Restaurant.find(
   );
 });
 
-// function escapeRegex(text) {
-//   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-// }
-
-//to find a restaurant by name
+//to find a restaurant by ID
 router.get("/:resources", function (req, res, next) {
-  console.log("test");
-  let restName = req.params.resources;
+  let restId = req.params.resources;
   Restaurant.findOne({
-    name: restName,
+    _id: restId,
   }).then((restaurant) => {
     console.log(restaurant);
     res.json({
