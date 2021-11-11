@@ -17,10 +17,10 @@ var reviewSchema = new mongoose.Schema({
     type: Object,
     required: false 
   },
-  rating: {
-    type: Number,
-    required: true
-  },
+  // rating: {
+  //   type: Number,
+  //   required: true
+  // },
   // createdAt: { type: timestamp}
   
   deleted: {

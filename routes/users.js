@@ -78,9 +78,7 @@ router.post('/login', async(req, res, next) => {
 
 //profile page ----> /myprofile
 router.get('/profile', async(req, res, next) => {
-    //console.log(req.headers);
     let myToken = req.headers.authorization;
-    //console.log(myToken);
 
     if (myToken) {
         let currentUser = await tokenService.verifyToken(myToken);

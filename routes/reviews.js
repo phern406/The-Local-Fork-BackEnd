@@ -10,7 +10,42 @@ var passwordService = require("../services/password");
 const { json, response } = require("express");
 const { Mongoose } = require("mongoose");
 
-//BRAND NEW ROUTES - OLDER ONES NOT REACT FRIENDLY
+
+//Find review by reviewId
+router.get('/singlereview/:restId', async (req, res, next)=>{
+  let restId = ObjectId(req.params.restId);
+  let myToken = req.headers.authorization;
+  let currentUser = await tokenService.verifyToken(myToken);
+
+  if (myToken){
+    data = await Review.findOne({
+      restaurantId: restId,
+      userId: ObjectId(currentUser.id)
+    }).exec();
+    if (data) {
+      res.json({ message: "Review found", reviewData: data });
+      console.log(data)
+    } else {
+      res.json({ message: "User did not review this restaurant" });
+    }
+  } else {
+    res.status(401).send("User not found")
+  }
+ });
+
+
+//SINGLE REVIEW
+// router.get('/singlereview/:revId', async (req, res, next)=>{
+//   let revId = req.params.revId;
+//   Review.findById({
+//     _id: revId
+//   }).then((data)=>{
+//     res.json({ message: "Review found", reviewData: data });
+//     console.log(data)
+//   })
+// });
+
+
 // FIND ALL REVIEWS WHERE USER ID IS CURRENT USERID
 router.get("/review-by-restaurant-curr-user/:restaurantId", async (req, res, next) => {
   // let currentUserId = req.params.id; // todo: load user from token
@@ -37,60 +72,65 @@ router.get("/review/:resid", async (req, res, next) => {
   });
 });
 
-//Find review by reviewId
-router.get('/singlereview/:revId', async (req, res, next)=>{
-  let revId = req.params.revId;
-  Review.findById({
-    _id: revId
-  }).then((data)=>{
-    res.json({ message: "Review found", reviewData: data });
-    console.log(data)
-  })
-});
 
-//ADD review to the review database --> working
+//ADD review to the review database --> with authentication
 router.post("/addNewReview", async (req, res, next) => {
-  try {
-    let newReview = new Review({
-      title: req.body.title,
-      review: req.body.review,
-      rating: req.body.rating,
-      restaurantId: req.body.restaurantId,
-      // userId:
-      restaurant
-    });
-    let result = await newReview.save();
-    console.log(result);
-    res.status(200).send("Review successfully added");
-  } catch (err) {
-    res.json({
-      message: "Review not added",
-      status: 404,
-    });
+  let myToken = req.headers.authorization;
+  let currentUser = await tokenService.verifyToken(myToken);
+  let currentResId = ObjectId(req.body.restaurantId);
+  if (currentUser){
+      let newReview = new Review({
+        title: req.body.title,
+        review: req.body.review,
+        userId: ObjectId(currentUser._id),
+        restaurantId: currentResId,
+      });
+      let result = await newReview.save();
+      console.log(result);
+      res.status(200).send("Review successfully added");
+    } else {
+      res.json({
+        message: "User not found",
+        status: 401,
+      });
+  }
+  }
+);
+
+//UPDATE/EDIT a review ---- with authentication
+router.put("/updateReview/:id", async (req, res) => {
+  let myToken = req.headers.authorization;
+  let currentUser = await tokenService.verifyToken(myToken);
+  let currentReviewId = ObjectId(req.params.id);
+
+  if (myToken) {
+      data = await Review.findOneAndUpdate(
+        {
+          _id: currentReviewId,
+          userId: ObjectId(currentUser._id),
+        },
+        {
+          review: req.body.review,
+          title: req.body.title,
+        }, {new: true}
+      ).exec();
+
+      //console.log(data);
+
+      if (data) {
+      res.json({
+            message: "Review successfully updated",
+            reviewData: data,
+          });
+        } else {
+          res.status(401).send("You are not allowed to update this review");
+        }
+  } else {
+    res.status(401).send("You are not allowed to update this review");
   }
 });
 
-//UPDATE/EDIT a review
-router.put("/updateReview/:id", function (req, res) {
-  let currentUserId = req.params.id;
 
-  // before editing review, check owner of the review and compare with current user
-  
-
-  Review.findByIdAndUpdate(
-    currentUserId,
-    { 
-      review: req.body.review,
-      title: req.body.title,
-      rating: req.body.rating,
-     },
-    
-    function (err, result) {
-      console.log(err, result);
-    }
-  );
-  res.status(200).send("Review successfully updated");
-});
 
 //DELETE a review --> THIS IS WORKING
 router.delete("/delete/:revId", function (req, res){
