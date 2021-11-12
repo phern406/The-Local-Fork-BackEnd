@@ -55,16 +55,13 @@ router.put("/updateRes", function (req, res) {
 //route for SEARCH ===> THIS WORKS
 router.post("/search", function (req, res) {
 
-
 Restaurant.find(
     {
       $or: [
         {
-          // name: req.body.query,
           name: { $regex: req.body.query, $options: "i" },
         },
         {
-          // location: req.body.query
           location: { $regex: req.body.query, $options: "i" },
         },
       ],
@@ -83,9 +80,9 @@ Restaurant.find(
 
 //to find a restaurant by ID
 router.get("/:resources", function (req, res, next) {
-  let resName = req.params.resources;
+  let resId = req.params.resources;
   Restaurant.findOne({
-    name: resName,
+    _id: resId,
   }).then((restaurant) => {
     console.log(restaurant);
     res.json({
@@ -95,5 +92,19 @@ router.get("/:resources", function (req, res, next) {
     });
   });
 });
+
+// router.get("/:resources", function (req, res, next) {
+//   let resName = req.params.resources;
+//   Restaurant.findOne({
+//     name: resName,
+//   }).then((restaurant) => {
+//     console.log(restaurant);
+//     res.json({
+//       status: 200,
+//       message: "Success",
+//       data: restaurant,
+//     });
+//   });
+// });
 
 module.exports = router;

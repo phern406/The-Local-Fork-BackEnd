@@ -11,7 +11,7 @@ const { json, response } = require("express");
 const { Mongoose } = require("mongoose");
 
 
-//Find review by reviewId
+//Find review by users for restaurants
 router.get('/singlereview/:restId', async (req, res, next)=>{
   let restId = ObjectId(req.params.restId);
   let myToken = req.headers.authorization;
@@ -34,30 +34,18 @@ router.get('/singlereview/:restId', async (req, res, next)=>{
  });
 
 
-//SINGLE REVIEW
-// router.get('/singlereview/:revId', async (req, res, next)=>{
-//   let revId = req.params.revId;
-//   Review.findById({
-//     _id: revId
-//   }).then((data)=>{
-//     res.json({ message: "Review found", reviewData: data });
-//     console.log(data)
-//   })
-// });
-
-
 // FIND ALL REVIEWS WHERE USER ID IS CURRENT USERID
-router.get("/review-by-restaurant-curr-user/:restaurantId", async (req, res, next) => {
-  // let currentUserId = req.params.id; // todo: load user from token
-  let restaurantId = req.params.restaurantId;
-  //const userObjId = ObjectId(currentUserId);
-  Review.find({
-    // userId: userObjId,
-    restaurantId: restaurantId,
-  }).then((reviewData) => {
-    res.json({ message: "all ok", reviewData: reviewData });
-  });
-});
+// router.get("/review-by-restaurant-curr-user/:restaurantId", async (req, res, next) => {
+//   // let currentUserId = req.params.id; // todo: load user from token
+//   let restaurantId = req.params.restaurantId;
+//   //const userObjId = ObjectId(currentUserId);
+//   Review.find({
+//     // userId: userObjId,
+//     restaurantId: restaurantId,
+//   }).then((reviewData) => {
+//     res.json({ message: "all ok", reviewData: reviewData });
+//   });
+// });
 
 //FIND ALL REVIEWS FOR A PARTICULAR RESTAURANT
 router.get("/review/:resid", async (req, res, next) => {
@@ -71,7 +59,6 @@ router.get("/review/:resid", async (req, res, next) => {
     res.json({ message: "all ok", reviewData: reviewData });
   });
 });
-
 
 //ADD review to the review database --> with authentication
 router.post("/addNewReview", async (req, res, next) => {
@@ -130,20 +117,31 @@ router.put("/updateReview/:id", async (req, res) => {
   }
 });
 
+//DELETE a review --> with authorisation
+router.delete("/delete/:revId", async (req, res)=>{
+  let myToken = req.headers.authorization;
+  let currentUser = await tokenService.verifyToken(myToken);
+  let revId = ObjectId(req.params.revId)
 
+  if (myToken){
+    data = await Review.findOneAndDelete(
+      {
+        _id: revId,
+        userId: ObjectId(currentUser._id) 
+      }
+    ).exec();
 
-//DELETE a review --> THIS IS WORKING
-router.delete("/delete/:revId", function (req, res){
-  let revId = req.params.revId
-  Review.findByIdAndDelete(
-    revId 
-  ).then((review)=>{
-    res.json({
-      status: 200,
-      message: "Deleted review",
-      data: review,
-    });
-  })
+    if (data) {
+      res.json({
+            message: "Review successfully deleted",
+            reviewData: data,
+          });
+        } else {
+          res.status(401).send("You are not allowed to delete this review");
+        }
+  } else {
+    res.status(401).send("You are not allowed to delete this review");
+  }
 });
 
 
@@ -156,11 +154,9 @@ router.post("/addReview", async (req, res, next) => {
   let currentUser = await tokenService.verifyToken(myToken);
 
   if (currentUser) {
-    // console.log(req.body);
 
     let ret = await Restaurant.updateOne(
       {
-        //_id: req.body._id,
         name: req.body.name,
       },
       {
@@ -173,10 +169,6 @@ router.post("/addReview", async (req, res, next) => {
       }
     );
   }
-
-  // console.log(ret.n);
-  // console.log(ret.nModified);
-
   res.status(200).send("Review successfully created");
 });
 
@@ -187,7 +179,7 @@ router.put("/editReview/:revId/:userId", async (req, res, next) => {
     { "userId": req.params.userId },
     {
       $set: {
-        "reviews.$.review": req.body.review,  //If statment if its true then good else error
+        "reviews.$.review": req.body.review,
       },
     },
     function (err) {
@@ -198,15 +190,13 @@ router.put("/editReview/:revId/:userId", async (req, res, next) => {
 });
 
 //deleting a review ---- LOOKS LIKE THIS IS WORKING!!
-//this route needs to be authenticated to allow a user delete their own review
 router.delete("/delete/:resId/:revId/:userId", function (req, res) {
   Restaurant.updateOne(
     { "userId": req.params.userId },
     {
       // this first id is the id for the restaurant
-      _id: req.params.resId, //'6176f81cb156ca1dceec104d'
+      _id: req.params.resId,
     },
-    // { $pull: { reviews: { _id: req.params.revId } } },
     { $pull: { reviews: { _id: req.params.revId } } },
 
     function (err) {
@@ -215,15 +205,5 @@ router.delete("/delete/:resId/:revId/:userId", function (req, res) {
   );
   res.status(200).send("Review deleted");
 });
-
-// deleting a review... OK SO THIS DELETED THE ENTIRE RESTAURANT!
-// router.delete('/deletereview', async(req, res, next) => {
-//     Restaurant.findOneAndRemove({ 'reviews._id': '6171210d06c7c548608f45b2' }, {
-//         '$pull': {
-//             'reviews.$.review': req.body.review
-//         }
-//     }, function(err) { err })
-//     res.status(200).send("Review successfully deleted");
-// })
 
 module.exports = router;
