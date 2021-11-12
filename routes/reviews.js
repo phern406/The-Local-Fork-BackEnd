@@ -35,17 +35,16 @@ router.get('/singlereview/:restId', async (req, res, next)=>{
 
 
 // FIND ALL REVIEWS WHERE USER ID IS CURRENT USERID
-// router.get("/review-by-restaurant-curr-user/:restaurantId", async (req, res, next) => {
-//   // let currentUserId = req.params.id; // todo: load user from token
-//   let restaurantId = req.params.restaurantId;
-//   //const userObjId = ObjectId(currentUserId);
-//   Review.find({
-//     // userId: userObjId,
-//     restaurantId: restaurantId,
-//   }).then((reviewData) => {
-//     res.json({ message: "all ok", reviewData: reviewData });
-//   });
-// });
+router.get("/myreview", async (req, res, next) => {
+  let myToken = req.headers.authorization;
+  let currentUser = await tokenService.verifyToken(myToken);
+  const userObjId = ObjectId(currentUser._id);
+  Review.find({
+    userId: userObjId,
+  }).then((reviewData) => {
+    res.json({ message: "all ok", reviewData: reviewData });
+  });
+});
 
 //FIND ALL REVIEWS FOR A PARTICULAR RESTAURANT
 router.get("/review/:resid", async (req, res, next) => {

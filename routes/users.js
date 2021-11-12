@@ -120,32 +120,32 @@ router.get('/logout', async(req, res, next) => {
 
 
 //allow authentication to visit other pages on the site. not sure how to test this!
-router.get('*', async(req, res, next) => {
-    let myToken = req.headers.authorization;
+// router.get('*', async(req, res, next) => {
+//     let myToken = req.headers.authorization;
 
-    if (myToken) {
-        let checkUser = await tokenService.verifyToken(myToken);
+//     if (myToken) {
+//         let checkUser = await tokenService.verifyToken(myToken);
 
-        if (checkUser) {
-            //route logic goes here
-            res.locals.user = checkUser;
-            next();
-        } else {
-            res.locals.user = null;
-            res.json({
-                message: "Invalid or expired token",
-                status: 403,
-            })
-        }
-    } else {
-        res.locals.user = null;
-        next();
-        res.json({
-            message: "No token received",
-            status: 403,
-        })
-    }
-})
+//         if (checkUser) {
+//             //route logic goes here
+//             res.locals.user = checkUser;
+//             next();
+//         } else {
+//             res.locals.user = null;
+//             res.json({
+//                 message: "Invalid or expired token",
+//                 status: 403,
+//             })
+//         }
+//     } else {
+//         res.locals.user = null;
+//         next();
+//         res.json({
+//             message: "No token received",
+//             status: 403,
+//         })
+//     }
+// })
 
 
 //favourtie page ----> I think this will pull info from the database if "liked" or not. so a route is needed for this
