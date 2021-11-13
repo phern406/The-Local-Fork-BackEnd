@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 
 var reviewSchema = new mongoose.Schema({
-  title: {
+  name: {
     type: String,
     required: false,
   },
@@ -16,6 +16,10 @@ var reviewSchema = new mongoose.Schema({
   restaurantId: {
     type: Object,
     required: false 
+  },
+  restaurantName: {
+    type: String,
+    required: true 
   },
   // rating: {
   //   type: Number,
