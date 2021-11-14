@@ -1,4 +1,3 @@
-// import { Schema, model } from 'mongoose';
 var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
@@ -44,16 +43,6 @@ var userSchema = new mongoose.Schema({
     }
 });
 
-//fire a function after doc saved to db
-// userSchema.post('save', function (doc, next) {
-
-
-//     //next();
-// });
-
-
 var User = mongoose.model('user', userSchema);
 
 module.exports = User
-
-// export default User

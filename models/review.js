@@ -20,13 +20,7 @@ var reviewSchema = new mongoose.Schema({
   restaurantName: {
     type: String,
     required: true 
-  },
-  // rating: {
-  //   type: Number,
-  //   required: true
-  // },
-  // createdAt: { type: timestamp}
-  
+  }, 
   deleted: {
     type: Boolean,
     default: false

@@ -19,7 +19,6 @@ var restaurantSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    //call the entire menu be in one array with values for breakfast, lunch and dinner?
     breakfast: {
         type: String,
         required: false

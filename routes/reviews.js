@@ -11,7 +11,7 @@ const { json, response } = require("express");
 const { Mongoose } = require("mongoose");
 
 
-//Find review by users for restaurants
+//FIND review by users for restaurants.
 router.get('/singlereview/:restId', async (req, res, next)=>{
   let restId = ObjectId(req.params.restId);
   let myToken = req.headers.authorization;
@@ -34,7 +34,7 @@ router.get('/singlereview/:restId', async (req, res, next)=>{
  });
 
 
-// FIND ALL REVIEWS WHERE USER ID IS CURRENT USERID
+// FIND ALL reviews where userId === current userId. This is used on the profile page
 router.get("/myreview", async (req, res, next) => {
   let myToken = req.headers.authorization;
   let currentUser = await tokenService.verifyToken(myToken);
@@ -42,11 +42,11 @@ router.get("/myreview", async (req, res, next) => {
   Review.find({
     userId: userObjId,
   }).then((reviewData) => {
-    res.json({ message: "all ok", reviewData: reviewData });
+    res.json({ message: "All reviews displayed", reviewData: reviewData });
   });
 });
 
-//FIND ALL REVIEWS FOR A PARTICULAR RESTAURANT
+//FIND ALL reviews for a particular restaurant
 router.get("/review/:resid", async (req, res, next) => {
   let currentResId = req.params.resid;
   console.log(currentResId);
@@ -59,7 +59,7 @@ router.get("/review/:resid", async (req, res, next) => {
   });
 });
 
-//ADD review to the review database --> with authentication
+//ADD review to the review database --> with authorisation
 router.post("/addNewReview", async (req, res, next) => {
   let myToken = req.headers.authorization;
   let currentUser = await tokenService.verifyToken(myToken);
@@ -77,14 +77,14 @@ router.post("/addNewReview", async (req, res, next) => {
       res.status(200).send("Review successfully added");
     } else {
       res.json({
-        message: "User not found",
+        message: "User not found, must be a logged in user",
         status: 401,
       });
   }
   }
 );
 
-//UPDATE/EDIT a review ---- with authentication
+//UPDATE/EDIT a review ---- with authorisation
 router.put("/updateReview/:id", async (req, res) => {
   let myToken = req.headers.authorization;
   let currentUser = await tokenService.verifyToken(myToken);
