@@ -62,6 +62,7 @@ Restaurant.find(
           name: { $regex: req.body.query, $options: "i" },
         },
         {
+
           location: { $regex: req.body.query, $options: "i" },
         },
       ],
