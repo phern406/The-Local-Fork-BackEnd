@@ -6,7 +6,6 @@ router.get('/profile', async(req, res, next) => {
         let currentUser = await tokenService.verifyToken(myToken);
 
         if (currentUser) {
-            //route logic goes here
         } else {
             res.json({
                 message: "Invalid or expired token",

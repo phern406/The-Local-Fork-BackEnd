@@ -26,9 +26,7 @@ router.post('/signup', async(req, res, next) => {
         });
         let result = await newUser.save();
         console.log(result);
-        //res.status(200).send("User successfully created");
     } catch (err) {
-        //if this stops working, res.json is the culprit!
         res.json({
             message: "User successfully created",
             status: 200
@@ -79,8 +77,6 @@ router.get('/profile', async(req, res, next) => {
 
     if (myToken) {
         let currentUser = await tokenService.verifyToken(myToken);
-        //console.log(currentUser);
-
         if (currentUser) {
             let responseUser = {
                 firstname: currentUser.firstname,

@@ -33,9 +33,6 @@ app.use(function(req, res, next) {
     next();
 });
 
-// app.options("*", (req, res) => {
-//     res.status(200).send("Preflight request allowed");
-//   });
 
 app.use(logger('dev'));
 app.use(express.json());

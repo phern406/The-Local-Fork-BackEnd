@@ -50,7 +50,6 @@ router.get("/myreview", async (req, res, next) => {
 router.get("/review/:resid", async (req, res, next) => {
   let currentResId = req.params.resid;
   console.log(currentResId);
-  //let currentUserId = req.params.id;
   const userObjId = ObjectId(currentResId);
   Review.find({
     restaurantId: userObjId,
@@ -102,8 +101,6 @@ router.put("/updateReview/:id", async (req, res) => {
         }, {new: true}
       ).exec();
 
-      //console.log(data);
-
       if (data) {
       res.json({
             message: "Review successfully updated",
@@ -144,66 +141,5 @@ router.delete("/delete/:revId", async (req, res)=>{
   }
 });
 
-
-
-
-//OLD CODE
-//route to ADD a review --> this allows a logged in user add a review to a restaurant
-router.post("/addReview", async (req, res, next) => {
-  let myToken = req.headers.authorization;
-  let currentUser = await tokenService.verifyToken(myToken);
-
-  if (currentUser) {
-
-    let ret = await Restaurant.updateOne(
-      {
-        name: req.body.name,
-      },
-      {
-        $push: {
-          reviews: {
-            username: currentUser.username,
-            review: req.body.review,
-          },
-        },
-      }
-    );
-  }
-  res.status(200).send("Review successfully created");
-});
-
-//updating/edit a review
-router.put("/editReview/:revId/:userId", async (req, res, next) => {
-  Restaurant.findOneAndUpdate(
-    { "reviews._id": req.params.revId },
-    { "userId": req.params.userId },
-    {
-      $set: {
-        "reviews.$.review": req.body.review,
-      },
-    },
-    function (err) {
-      err;
-    }
-  );
-  res.status(200).send("Review successfully updated");
-});
-
-//deleting a review ---- LOOKS LIKE THIS IS WORKING!!
-router.delete("/delete/:resId/:revId/:userId", function (req, res) {
-  Restaurant.updateOne(
-    { "userId": req.params.userId },
-    {
-      // this first id is the id for the restaurant
-      _id: req.params.resId,
-    },
-    { $pull: { reviews: { _id: req.params.revId } } },
-
-    function (err) {
-      err;
-    }
-  );
-  res.status(200).send("Review deleted");
-});
 
 module.exports = router;
