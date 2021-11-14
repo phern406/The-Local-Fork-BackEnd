@@ -1,4 +1,3 @@
-// import { Schema, model } from 'mongoose';
 var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
@@ -13,7 +12,7 @@ var userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true,
+        unique: [true, 'Email already exists, please sign in'],
         //lowercase: true
     },
     username: {
@@ -28,9 +27,11 @@ var userSchema = new mongoose.Schema({
     },
     city: {
         type: String,
+        required: false
     },
     tagline: {
         type: String,
+        required: false
     },
     deleted: {
         type: Boolean,
@@ -42,16 +43,6 @@ var userSchema = new mongoose.Schema({
     }
 });
 
-//fire a function after doc saved to db
-// userSchema.post('save', function (doc, next) {
-
-
-//     //next();
-// });
-
-
 var User = mongoose.model('user', userSchema);
 
 module.exports = User
-
-// export default User

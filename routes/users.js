@@ -1,16 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/user');
+const Restaurant = require('../models/restaurant');
+const Review = require('../models/review');
 
 var tokenService = require('../services/auth');
 var passwordService = require('../services/password');
 
-/* GET users listing. */
-
-//ROUTES NEEDED: 
 
 
-//registration/sign up ----> /signup   THIS SEEMS TO BE WORKING FINE!
+//REGISTER to new user
 router.post('/signup', async(req, res, next) => {
     try {
         let newUser = new User({
@@ -37,9 +36,7 @@ router.post('/signup', async(req, res, next) => {
     }
 })
 
-
-
-// login ----> /login THIS IS THE ONE THAT WORKS
+//LOGIN to an already existing account
 router.post('/login', async(req, res, next) => {
     console.log(req.body)
     User.findOne({ username: req.body.username }, function(err, user) {
@@ -76,12 +73,9 @@ router.post('/login', async(req, res, next) => {
     })
 })
 
-
-//profile page ----> /myprofile
+//PROFILE page
 router.get('/profile', async(req, res, next) => {
-    //console.log(req.headers);
     let myToken = req.headers.authorization;
-    //console.log(myToken);
 
     if (myToken) {
         let currentUser = await tokenService.verifyToken(myToken);
@@ -114,53 +108,12 @@ router.get('/profile', async(req, res, next) => {
     }
 })
 
-//logout
+//LOGOUT
 router.get('/logout', async(req, res, next) => {
     res.cookie('jwt', '');
     res.json({ status: "logged out"});
     res.redirect('/login');
 })
-
-
-//allow authentication to visit other pages on the site. not sure how to test this!
-router.get('*', async(req, res, next) => {
-    let myToken = req.headers.authorization;
-
-    if (myToken) {
-        let checkUser = await tokenService.verifyToken(myToken);
-
-        if (checkUser) {
-            //route logic goes here
-            res.locals.user = checkUser;
-            next();
-        } else {
-            res.locals.user = null;
-            res.json({
-                message: "Invalid or expired token",
-                status: 403,
-            })
-        }
-    } else {
-        res.locals.user = null;
-        next();
-        res.json({
-            message: "No token received",
-            status: 403,
-        })
-    }
-})
-
-
-//favourtie page ----> I think this will pull info from the database if "liked" or not. so a route is needed for this
-
-//map ----> 
-
-
-//STRETCH GOALS 
-//admin ---->
-// admin user should be able to view all users and restaurants; and delete reviews.
-
-
 
 
 module.exports = router;

@@ -2,8 +2,9 @@ const { query } = require("express");
 var express = require("express");
 var router = express.Router();
 var Restaurant = require("../models/restaurant");
+const Review = require("../models/review");
 
-//find all restaurants
+//FIND ALL restaurants. Rendered to the homepage
 router.get("/", function (req, res, next) {
   let restName = req.params.resources;
   Restaurant.find({}).then((restaurant) => {
@@ -14,28 +15,8 @@ router.get("/", function (req, res, next) {
     });
   });
 });
-// router.get("/", function (req, res) {
-//   Restaurant.find(
-//     {},
-//     {
-//       _id: 0,
-//       name: 1,
-//       location: 1,
-//       hours: 1,
-//       rating: 1,
-//       reviews: 10,
-//     },
-//     function (err, result) {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         res.json(result), console.log(result);
-//       }
-//     }
-//   );
-// });
 
-//to add a restaurant
+//ADD a new restaurant to the database
 router.post("/addRes", async (req, res, next) => {
   try {
     let newRes = new Restaurant({
@@ -43,7 +24,7 @@ router.post("/addRes", async (req, res, next) => {
       location: req.body.location,
       hours: req.body.hours,
       availability: req.body.availability,
-      rating: req.body.rating,
+      rating: req.body.rating, //Average Rating from all reviews. 
       menu: req.body.menu,
       deleted: req.body.deleted,
     });
@@ -58,7 +39,7 @@ router.post("/addRes", async (req, res, next) => {
   }
 });
 
-//update a restaurant
+//UPDATE a restaurant
 router.put("/updateRes", function (req, res) {
   Restaurant.findOneAndUpdate(
     { name: "Res7" },
@@ -68,21 +49,20 @@ router.put("/updateRes", function (req, res) {
     }
   );
 
-  res.status(200).send("User successfully created");
+  res.status(200).send("Restaurant successfully updated");
 });
 
-//route for SEARCH ===> THIS WORKS
+//SEARCH
 router.post("/search", function (req, res) {
-  console.log(req.body.query)
-  Restaurant.find(
+
+Restaurant.find(
     {
       $or: [
         {
-          // name: req.body.query,
           name: { $regex: req.body.query, $options: "i" },
         },
         {
-          // location: req.body.query
+
           location: { $regex: req.body.query, $options: "i" },
         },
       ],
@@ -99,16 +79,11 @@ router.post("/search", function (req, res) {
   );
 });
 
-// function escapeRegex(text) {
-//   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-// }
-
-//to find a restaurant by name
+//FIND a restaurant by ID
 router.get("/:resources", function (req, res, next) {
-  console.log("test");
-  let restName = req.params.resources;
+  let resId = req.params.resources;
   Restaurant.findOne({
-    name: restName,
+    _id: resId,
   }).then((restaurant) => {
     console.log(restaurant);
     res.json({
@@ -118,5 +93,6 @@ router.get("/:resources", function (req, res, next) {
     });
   });
 });
+
 
 module.exports = router;

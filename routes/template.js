@@ -20,6 +20,3 @@ router.get('/profile', async(req, res, next) => {
         })
     }
 })
-
-
-//router.get('/profile', requireAuth, async(req, res, next) => { -----> this requires just "requireAuth" to be used to secure the route.

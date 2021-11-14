@@ -19,7 +19,6 @@ var restaurantSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    //call the entire menu be in one array with values for breakfast, lunch and dinner?
     breakfast: {
         type: String,
         required: false
@@ -36,13 +35,14 @@ var restaurantSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    
     //does the review need to be in a separate model of its own?
     //how do i connect the review given by a user to the user's id under models.user?
-    reviews: [{
-        username: String,
-        review: String,
-        required: false
-    }]
+    // reviews: [{
+    //     username: String,
+    //     review: String,
+    //     required: false
+    // }]
 });
 
 var Restaurant = mongoose.model('restaurant', restaurantSchema);
